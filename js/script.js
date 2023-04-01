@@ -8,7 +8,7 @@ const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 
 let word = "magnolia"; // Temporary. Will be replaced with a random word from the array below.
-const guessedLetters = []; // Empty array to store the player's guessed letters.
+let guessedLetters = []; // Empty array to store the player's guessed letters.
 let remainingGuesses = 8; // Variable to store the number of remaining guesses.
 
 const getWord = async function () { // Function to get a random word from the array below
@@ -105,6 +105,7 @@ const updateGuessesRemaining = function (guess) { // Function to update the numb
 
     if (remainingGuesses === 0) { // Check if the player has no guesses remaining
         message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`; // If so, display the losing message
+        startOver(); // Call the startOver function
     } else if (remainingGuesses === 1) { // Check if the player has one guess remaining
         remainingGuessesSpan.innerText = `${remainingGuesses} guess`; // If so, display the singular form of guess
     } else { // If the player has more than one guess remaining
@@ -116,5 +117,29 @@ const checkIfWin = function () { // Function to check if the player has won
     if (word.toUpperCase() === wordInProgress.innerText) { // Check if the word is equal to the wordInProgress paragraph
         message.classList.add("win"); // If so, add the win class to the message paragraph
         message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`; // Add the winning message to the message paragraph
+        startOver(); // Call the startOver function
     }
+};
+
+const startOver = function () { // Function to start the game over
+    guessLetterButton.classList.add("hide"); // Hide the guess letter button
+    remainingGuessesElement.classList.add("hide"); // Hide the remaining guesses element
+    guessedLettersElement.classList.add("hide"); // Hide the guessed letters element
+    playAgainButton.classList.remove("hide"); // Show the play again button
+
+    playAgainButton.addEventListener("click", function () { // Event listener for the play again button
+        message.classList.remove("win"); // Remove the win class from the message paragraph
+        message.innerText = ""; // Clear the message paragraph
+        guessedLettersElement.innerHTML = ""; // Clear the guessedLettersElement paragraph
+        remainingGuesses = 8; // Reset the remainingGuesses variable
+        guessedLetters = []; // Reset the guessedLetters array
+        remainingGuessesSpan.innerText = `${remainingGuesses} guesses`; // Reset the remaining guesses span
+
+        getWord(); // Call the getWord function
+
+        guessLetterButton.classList.remove("hide"); // Show the guess letter button
+        remainingGuessesElement.classList.remove("hide"); // Show the remaining guesses element
+        guessedLettersElement.classList.remove("hide"); // Show the guessed letters element
+        playAgainButton.classList.add("hide"); // Hide the play again button
+    });
 };
